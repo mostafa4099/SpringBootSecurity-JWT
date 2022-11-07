@@ -1,7 +1,9 @@
 package com.mostafa;
 
 import com.mostafa.entity.CustomUser;
+import com.mostafa.entity.UserRole;
 import com.mostafa.repository.CustomUserRepository;
+import com.mostafa.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 
@@ -14,14 +16,29 @@ import java.util.stream.Stream;
 public class SpringBootApplication {
 
     @Autowired
+    UserRoleRepository userRoleRepository;
+    @Autowired
     CustomUserRepository userRepository;
 
+    /**
+     * Create user and user roles
+     */
     @PostConstruct
     void initUser(){
+        UserRole adminRole = new UserRole(0, "ROLE_ADMIN", "Admin");
+        UserRole savedAdminRole = userRoleRepository.save(adminRole);
+
+        UserRole userRole = new UserRole(0, "ROLE_USER", "User");
+        UserRole savedUserRole = userRoleRepository.save(userRole);
+
+        List<UserRole> adminRoles = Stream.of(savedAdminRole,savedUserRole).collect(Collectors.toList());
+        List<UserRole> userRoles = Stream.of(savedUserRole).collect(Collectors.toList());
+
         List<CustomUser> userList = Stream.of(
-                new CustomUser(0, "mostafa", "mostafa", "Golam Mostafa", "mostafa.sna@gmail.com"),
-                new CustomUser(0, "admin", "admin", "Admin", "")
+                new CustomUser(0, "mostafa", "mostafa", "Golam Mostafa", "mostafa.sna@gmail.com", userRoles),
+                new CustomUser(0, "admin", "admin", "Admin", "", adminRoles)
         ).collect(Collectors.toList());
+
         userRepository.saveAll(userList);
     }
 

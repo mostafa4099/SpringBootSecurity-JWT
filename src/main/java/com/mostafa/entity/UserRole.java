@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * @author Md. Golam Mostafa | mostafa.sna@gmail.com
- * @File com.mostafa.entity.Book.java: SpringBootSecurity-JWT
+ * @File com.mostafa.entity.UserRole.java: SpringBootSecurity-JWT
  * @CreationDate 10/2/2022 12:27 PM
  */
 @Entity
@@ -20,11 +18,17 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Data
 @ToString
-public class Book {
+@Table(name = "user_role")
+public class UserRole implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private long id;
     private String name;
-    private String author;
-    private String publisher;
+    private String description;
+
+    @Override
+    public String getAuthority() {
+        return name;
+    }
 }

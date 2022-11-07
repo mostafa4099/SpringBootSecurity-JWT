@@ -3,13 +3,12 @@ package com.mostafa.service;
 import com.mostafa.entity.CustomUser;
 import com.mostafa.repository.CustomUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import static org.springframework.security.core.userdetails.User.withUsername;
 
 /**
  * @author Md. Golam Mostafa | mostafa.sna@gmail.com
@@ -22,9 +21,25 @@ public class CustomUserDetailService implements UserDetailsService {
     @Autowired
     CustomUserRepository userRepository;
 
+    /**
+     * Authenticate user using user provided credential.
+     * @param userName
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        CustomUser customUser = userRepository.findUserByUserName(userName);
-        return new User(customUser.getUserName(), customUser.getPassword(), new ArrayList<>());
+        CustomUser user = userRepository.findUserByUserName(userName).orElseThrow(
+                () -> new UsernameNotFoundException("User name "+userName+" not found.")
+        );
+
+        return withUsername(user.getUserName())
+                .password(user.getPassword())
+                .authorities(user.getRoles())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
     }
 }
