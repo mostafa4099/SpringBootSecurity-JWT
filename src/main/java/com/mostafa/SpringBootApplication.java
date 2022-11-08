@@ -6,6 +6,7 @@ import com.mostafa.repository.CustomUserRepository;
 import com.mostafa.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -17,6 +18,8 @@ public class SpringBootApplication {
 
     @Autowired
     UserRoleRepository userRoleRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     CustomUserRepository userRepository;
 
@@ -35,8 +38,8 @@ public class SpringBootApplication {
         List<UserRole> userRoles = Stream.of(savedUserRole).collect(Collectors.toList());
 
         List<CustomUser> userList = Stream.of(
-                new CustomUser(0, "mostafa", "mostafa", "Golam Mostafa", "mostafa.sna@gmail.com", userRoles),
-                new CustomUser(0, "admin", "admin", "Admin", "", adminRoles)
+                new CustomUser(0, "mostafa", passwordEncoder.encode("mostafa"), "Golam Mostafa", "mostafa.sna@gmail.com", userRoles),
+                new CustomUser(0, "admin", passwordEncoder.encode("admin"), "Admin", "", adminRoles)
         ).collect(Collectors.toList());
 
         userRepository.saveAll(userList);

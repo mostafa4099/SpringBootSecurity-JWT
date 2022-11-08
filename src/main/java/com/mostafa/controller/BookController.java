@@ -4,6 +4,7 @@ import com.mostafa.entity.Book;
 import com.mostafa.excption.NotFoundException;
 import com.mostafa.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     public List<Book> getAllBookList() throws NotFoundException {
         return bookService.findAllBooks();
     }

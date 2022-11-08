@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.List;
@@ -36,9 +37,9 @@ public class CustomUser {
 //            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<UserRole> roles;
 
-    public CustomUser SetUser(UserModel model) {
+    public CustomUser SetUser(UserModel model, PasswordEncoder encoder) {
         this.userName = model.getUserName();
-        this.password = model.getPassword();
+        this.password = encoder.encode(model.getPassword());
         this.name = model.getName();
         this.email = model.getEmail();
         return this;

@@ -1,6 +1,7 @@
 package com.mostafa.service;
 
 import com.mostafa.entity.CustomUser;
+import com.mostafa.excption.NotFoundException;
 import com.mostafa.model.UserModel;
 import org.springframework.security.core.Authentication;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  * @CreationDate 10/2/2022 12:36 PM
  */
 public interface UserService {
-    Authentication signin(UserModel model);
+    Optional<String> signin(UserModel model) throws NotFoundException;
 
     CustomUser signup(UserModel model);
 
