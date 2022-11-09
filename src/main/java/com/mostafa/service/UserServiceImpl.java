@@ -7,12 +7,9 @@ import com.mostafa.excption.NotFoundException;
 import com.mostafa.model.UserModel;
 import com.mostafa.repository.CustomUserRepository;
 import com.mostafa.repository.UserRoleRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -78,12 +75,23 @@ public class UserServiceImpl implements UserService {
             user = user.SetUser(model, passwordEncoder);
             user.setRoles(Stream.of(role.get()).collect(Collectors.toList()));
 
-            return userRepository.save(user);
+            user = userRepository.save(user);
+
+            user.setPassword("");
+
+            return user;
         }
     }
 
     @Override
     public List<CustomUser> getAll() {
-        return userRepository.findAll();
+        List<CustomUser> userList = userRepository.findAll();
+
+        userList = userList.stream().map(user -> {
+            user.setPassword("");
+            return user;
+        }).collect(Collectors.toList());
+
+        return userList;
     }
 }

@@ -28,20 +28,25 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     public Book getBook(@PathVariable("id") long id) throws NotFoundException {
         return bookService.findBookById(id);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Book saveBook(@RequestBody Book book) {
         return bookService.saveBook(book);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Book updateBook(@RequestBody Book book) throws NotFoundException {
         return bookService.updateBook(book);
     }
+
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteBook(@RequestBody Book book) throws NotFoundException {
         return bookService.deleteBook(book);
     }
